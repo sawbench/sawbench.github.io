@@ -1,0 +1,1251 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <style>
+            pre, code {
+                font-size: 16px;
+            }
+        </style>
+
+        
+
+        <title>SAW-Bench</title>
+        <link rel="icon" type="image/x-icon" href="./static/img/icons/logo.png">
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Open Graph -->
+        <meta property="og:url" content="https://roverbench.github.io/" />
+        <meta property="og:image" content="" />
+        <meta property="og:title" content="Learning Situated Awareness in the Real World" />
+        
+        <!-- Twitter -->
+        <meta name="twitter:url" content="https://x.com/cheryyun_l/status/1985838110186619102" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="" />
+        <meta name="twitter:title" content="Learning Situated Awareness in the Real World" />
+        <meta name="twitter:description" content="" />
+
+        <!-- JS Libraries -->
+        <script src="./static/js/distill_template.v2.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="https://d3js.org/d3-collection.v1.min.js"></script>
+        <script src="https://rawgit.com/nstrayer/slid3r/master/dist/slid3r.js"></script>
+
+        <script defer="" src="./static/js/hider.js"></script>
+        <script defer src="./static/js/image_interact.js"></script>
+        <script defer src="./static/js/switch_videos.js"></script>
+        <script defer src="./static/js/video-speed.js"></script>
+
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="./static/css/style.css">
+        <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+        
+        <!-- KaTeX -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+
+        <!-- Plotly.js for charts -->
+        <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+        
+        <!-- FontAwesome -->
+        <script defer src="./static/js/fontawesome.all.min.js"></script>
+
+        <!-- Medium Zoom -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+        <script defer src="./static/js/medium-zoom.min.js"></script>
+        <script defer src="./static/js/zoom.js"></script>
+
+        <!-- Leaderboard Styles -->
+        <style>
+        
+        /* Key Findings - callout styling */
+        .highlight-box {
+            background: linear-gradient(180deg, #eef7ff 0%, #e6f2ff 100%);
+            border: 2px solid #6cb6ff;
+            border-radius: 16px;
+            padding: 18px 22px;
+            margin: 14px auto; /* centers when width <= 100% */
+            box-shadow: 0 6px 14px rgba(28, 100, 242, 0.08);
+            color: #1e3a8a; /* deep blue for readability */
+            font-size: 18px;
+            line-height: 1.6;
+            font-weight: 400; /* no bold for main content */
+            width: 120%;
+            /* When wider than parent, pull back equally on both sides */
+            margin-left: calc(-10%);
+            margin-right: calc(-10%);
+        }
+
+        /* Remove italics/bold inside highlight and make it crisp */
+        .highlight-box em { font-style: normal; font-weight: 400; }
+        .highlight-box strong { font-weight: 600; }
+
+        /* Bulleted look similar to the reference image */
+        .highlight-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .highlight-box + .highlight-box { margin-top: 16px; }
+
+        /* Mobile: keep it inside the viewport */
+        @media (max-width: 900px) {
+            .highlight-box {
+                width: 100%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+                /* Author link styling */
+        .author-block a {
+            color: #1e6278;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.2s ease;
+            font-size: 1.1em;
+        }
+        
+        .author-block a:hover {
+            color: var(--mgt-red);
+            border-bottom-color: var(--mgt-red);
+        }
+
+        /* Key Findings unified card styles */
+        .keyfinding-wrap {
+            max-width: 1200px;
+            width: 130%;
+            margin: 20px auto;
+            margin-left: -15%;
+            margin-right: auto;   
+        }
+        .keyfinding-card {
+            box-sizing: border-box;
+            border-left: 5px solid #b4ceee;
+            background: linear-gradient(135deg, #f1f8fc 0%, #f0f5fa 100%);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(209,189,232,0.08);
+        }
+        .keyfinding-title {
+            color: #7895b6;
+            margin: 0 0 15px 0;
+            font-weight: 700;
+            text-align: left;
+            font-size: 1.2rem;
+        }
+        .keyfinding-text {
+            margin: 0;
+            color: #2d3436;
+            text-align: left;
+            font-size: 1.15rem;
+        }
+
+           /* Leaderboard Styles */
+        .leaderboard-table {
+            width: 160%;
+            margin-left: -30%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
+
+        .leaderboard-container { position: relative; }
+
+        .leaderboard-table thead {
+            background: #4a5568;
+            color: white;
+        }
+
+        .leaderboard-table th {
+            padding: 8px 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 0.025em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            background: #4a5568;
+            color: white;
+        }
+
+        .sortable-header {
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .sortable-header .sort-indicator {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            font-size: 14px;
+            line-height: 1;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+
+        .sortable-header.active .sort-indicator {
+            color: white;
+        }
+        
+        .section-header {
+            background-color: #deeef8;
+            font-weight: 700;
+            color: #2d3748;
+            letter-spacing: 1px;
+            font-size: 18px;
+            text-align: center;
+            padding: 12px !important;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .leaderboard-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+            text-align: center;
+        }
+        
+        .leaderboard-table tbody tr {
+            transition: background-color 0.15s ease;
+        }
+        
+        .leaderboard-table tbody tr:hover {
+            background-color: #f7fafc;
+        }
+
+        .leaderboard-table td:first-child {
+            font-weight: 600;
+            text-align: left;
+            color: #2d3748;
+            padding-left: 20px;
+            white-space: normal;
+            line-height: 1.6;
+        }
+        
+        .leaderboard-table td:nth-child(7) {
+            font-size: 15px;
+            color: #2d3748;
+        }
+        
+        .human-level-row {
+            background: #fffbeb85 !important;
+            font-weight: 600;
+        }
+        
+        .top-performer {
+            background: #f0fdf494 !important;
+        }
+
+        .top-performer td:first-child::before {
+            content: '🥇 ';
+        }
+
+        .model-badge {
+            display: block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-top: 4px;
+            margin-left: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            width: fit-content;
+        }
+
+        .proprietary-badge {
+            background: #e2e8f0;
+            color: #475569;
+            border: 1px solid #cbd5e0;
+        }
+
+        .open-badge {
+            background: #e6fffa;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+        .edit-badge {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+        
+        .leaderboard-table tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+        
+        .baseline-row {
+            font-style: italic;
+            opacity: 0.8;
+            background-color: #f9fafb;
+        }
+        
+        .best-score {
+            font-weight: 700;
+            text-decoration: underline;
+            text-decoration-color: #cbd5e0;
+            text-underline-offset: 2px;
+        }
+
+        .section-divider {
+            border-top: 2px solid #e2e8f0;
+        }
+        
+        @media (max-width: 768px) {
+            .leaderboard-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scroll-behavior: smooth;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+            
+            .leaderboard-table {
+                width: 1200px; /* Fixed width to ensure horizontal scrolling */
+                margin-left: 0;
+                font-size: 12px;
+                min-width: 1200px;
+            }
+            
+            .leaderboard-table th,
+            .leaderboard-table td {
+                padding: 8px;
+                white-space: nowrap;
+                min-width: 80px;
+            }
+            
+            .leaderboard-table td:first-child {
+                min-width: 180px;
+                max-width: 180px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                padding-left: 12px;
+            }
+
+            /* Add scroll hint for mobile users */
+            .leaderboard-container::after {
+                content: "← Swipe to scroll →";
+                position: absolute;
+                bottom: -25px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 11px;
+                color: #666;
+                font-style: italic;
+                pointer-events: none;
+            }
+        }
+        .org-logo {
+            height: 24px;  /* 控制logo高度 */
+            width: auto;   /* 宽度自适应 */
+            display: block;
+            margin: 0 auto;  /* 水平居中 */
+        }
+
+        /* 如果需要hover效果 */
+        .org-logo:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+            transition: all 0.2s ease;
+        }
+        </style>
+    </head>
+
+    <body>
+        <div class="header-wrapper">
+            <div class="header-container" id="header-container">
+                <div class="header-content">
+                    <div class="rover-title-wrapper">
+                        <h1 style="margin-top: 0px">
+                            <!-- <i><span class="rover-logo"><span class="r1">R</span><span class="o">O</span><span class="v">V</span><span class="e">E</span><span class="r2">R</span></span></i> -->
+                             SAW-Bench
+                        </h1>
+                        <!-- <img src="./static/img/head.png" alt="ROVER illustration" class="rover-title-image"> -->
+                    </div>
+                    <div class="responsive-header">
+                        <h1>Learning Situated Awareness in the Real World</h1>
+                        <!-- <p style="margin-top: 8px; margin-bottom: 0; font-size: 1.4em; font-weight: 600; color: #4a5899;">ICLR 2026</p> -->
+                        <br>
+                    </div>
+
+                                    <div class="authors-section">
+                    <!-- Paper authors -->
+                    <span class="author-block">
+                        <a href="https://leechuh.github.io/" target="_blank">
+                            Chuhan Li</a><sup style="font-size: 0.8em;">1</sup>,</span>
+                    <span class="author-block">
+                        <a href="https://scholar.google.com/citations?user=CQZYQ_8AAAAJ&hl=en" target="_blank">
+                            Ruilin Han</a><sup style="font-size: 0.8em;">2</sup>,</span>
+                    <span class="author-block">
+                        <a href="https://stanford.edu/~joycj/" target="_blank">
+                            Joy Hsu</a><sup style="font-size: 0.8em;">3</sup>,</span>
+                    <span class="author-block">
+                        <a href="https://cheryyunl.github.io" target="_blank">
+                            Yongyuan Liang</a><sup style="font-size: 0.8em;">4</sup>,
+                    </span>
+                    <span class="author-block">
+                        <a href="https://www.linkedin.com/in/rdhawan255/" target="_blank">
+                            Rajiv Dhawan</a><sup style="font-size: 0.8em;">5</sup>,
+                    </span>
+                    <br>
+                    <span class="author-block">
+                        <a href="https://jiajunwu.com/" target="_blank">
+                            Jiajun Wu</a><sup style="font-size: 0.8em;">3</sup>,
+                    </span>
+                    <span class="author-block">
+                        <a href="https://faculty.ucmerced.edu/mhyang/" target="_blank">
+                            Ming-Hsuan Yang</a><sup style="font-size: 0.8em;">6</sup>,
+                    </span>
+                    <span class="author-block">
+                        <a href="https://eric-xw.github.io/" target="_blank">
+                            Xin Eric Wang</a><sup style="font-size: 0.8em;">1</sup>,
+                    </span>
+                </div>
+                <br>
+                <div class="affiliations-section">
+                    <span class="author-block"><sup style="font-size: 0.8em;">1</sup>University of California, Santa Barbara,</span>
+                    <span class="author-block"><sup style="font-size: 0.8em;">2</sup>Yale University,</span>
+                    <span class="author-block"><sup style="font-size: 0.8em;">3</sup>Stanford University,</span>
+                    <br>
+                    <span class="author-block"><sup style="font-size: 0.8em;">4</sup>University of Maryland, College Park,</span>
+                    <span class="author-block"><sup style="font-size: 0.8em;">5</sup>Amazon,</span>
+                    <span class="author-block"><sup style="font-size: 0.8em;">6</sup>University of California, Merced</span>
+                </div>
+
+                <div class="button-container">
+                    <a href="" class="button paper-link" target="_blank">
+                        <span class="icon is-small"><i class="ai ai-arxiv"></i></span>
+                        arXiv
+                    </a>
+                    <a href="" class="button" target="_blank">
+                        <span class="icon is-small"><i class="fab fa-github"></i></span>
+                        <span>Code</span>
+                    </a>                      
+                    <a href="" class="button" target="_blank">
+                        <span class="icon is-small">
+                            <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face logo" style="height: 1em;" loading="lazy">
+                        </span>
+                        <span>SAW-Bench</span>
+                    </a>
+                    <a href="" class="button">
+                        <span class="icon">
+                            <i class="fab fa-twitter"></i>
+                        </span>
+                        <span>Twitter / X</span>
+                    </a>
+                    <a href="#rover-leaderboard" class="button">
+                        <span class="icon is-small">
+                            <img src="./static/img/leaderboard-star-svgrepo-com.svg" alt="Leaderboard logo" style="height: 0em;" loading="lazy">
+                        </span>
+                        <span>Leaderboard</span>
+                    </a>
+                </div>   
+
+                      
+
+                        <div class="icon-container">
+                            <div class="icon-item">
+                                
+                                <img src="./static/img/icons/bench.svg" alt="Benchmark Icon">
+                                <div><strong>Situated Awareness</strong>: 
+                                    First benchmark evaluating <em>observer-centirc</em> spatial reasoning from egocentric videos
+                                </div>
+                            </div>
+                            <div class="icon-item">
+                                <img src="./static/img/icons/evaluation.svg" alt="Evaluation Icon">
+                                <div>
+                                    <strong>Real-World, Self-Recorded Videos</strong>: 
+                                    All videos are self-recored with Ray Ban Meta Glass in real environments.
+                                </div>
+                            </div>
+                            <div class="icon-item">
+                                <img src="./static/img/icons/speech.svg" alt="Generation Icon" class="icon">
+                                <div><strong>Core Situated Awareness Categories</strong>: 
+                                    Self-localization, route reasoning, spatial memory, and action feasibility.</div>
+                            </div>
+                            <div class="icon-item">
+                                <img src="./static/img/icons/vision.svg" alt="Analysis Icon" class="icon">
+                                <div><strong>Key Insights</strong>: 
+                                    Current models do not maintain an observer-centric spatial state.    
+                                </div>
+                            </div>
+                        </div>
+                    
+
+                    
+                    <!-- All paper links removed for privacy -->
+                </div>
+            </div>
+        </div>
+    <d-article>
+        
+
+        <d-figure id="teaser">
+            <figure>
+                <img data-zoomable="" draggable="false" src="static/img/teaser.png" alt="SAW Teaser">
+                <br>
+                <figcaption>
+                    <strong><i>Figure 1</i></strong>: <strong>(Left) Situated Awareness in the Real World.</strong>
+    A real-world example in which the observer walks along a straight trajectory while frequently rotating their head. The resulting egocentric video exhibits substantial camera orientation changes despite linear translational motion. 
+    <strong>(Right) Reasoning Task Performance.</strong> Radar plot compares human performance with representative MFMs across six situated awareness tasks in SAW-Bench.
+                </figcaption>
+            </figure>
+        </d-figure>
+        <!-- Abstract -->
+        <p class="text abstract">
+            A core aspect of human perception is <em>situated awareness</em>, the ability to relate ourselves to the surrounding physical environment and reason over possible actions in context. However, most existing benchmarks for multimodal foundation models (MFMs) emphasize <strong>environment-centric</strong> spatial relations (relations among objects in a scene), while largely overlooking <strong>observer-centric</strong> relationships that require reasoning relative to an agent's viewpoint, pose, and motion. To bridge this gap, we introduce <strong>SAW-Bench</strong> (<strong><u>S</u></strong>ituated <strong><u>A</u></strong>wareness in the Real <strong><u>W</u></strong>orld), a novel benchmark for evaluating egocentric situated awareness using real-world videos. SAW-Bench comprises <strong>786</strong> self-recorded videos captured with Ray-Ban Meta (Gen&nbsp;2) smart glasses across diverse indoor and outdoor environments, along with over 2,071 <em>human-annotated</em> question-answer pairs. It probes a model's observer-centric understanding through <em>six</em> distinct awareness tasks. Our comprehensive evaluation reveals a 37.66% human-model performance gap, even for the best-performing MFM, Gemini&nbsp;3&nbsp;Flash. Beyond this gap, our in-depth analysis uncovers systematic failure modes: although models can exploit partial geometric cues in egocentric videos, they frequently fail to infer a coherent camera geometry, resulting in consistent spatial reasoning errors. We position SAW-Bench as a benchmark for situated spatial intelligence, moving beyond passive observation to understanding physcially grounded, observer-centric dynamics.
+        </p>
+
+
+
+ <div id='saw-bench' class="rover-benchmark">
+            
+            <div id="sec:rover-overview" class="sub-section">
+                <h2 class="text"><span class="rover-text">SAW-Bench Data Viewer</span></h2>
+
+<!-- ======================= SAW-Bench 3x6 Video Grid ======================= -->
+
+<style>
+  /* Large wide layout */
+  .saw-viewer-wide {
+    width: 165%;
+    margin-left: -32.5%;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  /* EXACTLY 6 columns */
+  .saw-video-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+
+  .saw-video-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Keep original proportions */
+  .saw-video-item video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    background: #000;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  }
+
+  .saw-video-caption {
+    margin-top: 8px;
+    font-size: 1rem;
+    text-align: left;
+    color: #374151;
+    line-height: 1.3;
+  }
+
+  /* Optional: reduce width on smaller screens */
+  @media (max-width: 1600px) {
+    .saw-viewer-wide {
+      width: 100%;
+      margin-left: 0;
+    }
+  }
+</style>
+
+<div class="saw-viewer-wide">
+  <div class="saw-video-grid">
+
+    <!-- Row 1 -->
+    <div class="saw-video-item">
+      <video autoplay muted loop playsinline src="static/videos/0_33.mp4"></video>
+      <p class="saw-video-caption"><span class="shape">[Route Shape]</span> What's the shape of my moving trajectory?</p>
+    </div>
+
+    <div class="saw-video-item">
+      <video autoplay muted loop playsinline src="static/videos/1_0.mp4"></video>
+      <p class="saw-video-caption"><span class="loc">[Self-Localization]</span> Am I located at the corner, along the side, or near the center of the office?</p>
+    </div>
+
+    <div class="saw-video-item">
+      <video autoplay muted loop playsinline src="static/videos/2_43.mp4"></video>
+      <p class="saw-video-caption"><span class="dir">[Relative Direction]</span> From my viewing point at the end of the video, where am I located at the beginning of the video?</p>
+    </div>
+
+    <div class="saw-video-item">
+      <video autoplay muted loop playsinline src="static/videos/3_42.mp4"></video>
+      <p class="saw-video-caption"><span class="shape">[Route Shape]</span> What's the shape of my moving trajectory?</p>
+    </div>
+
+    <div class="saw-video-item">
+      <video autoplay muted loop playsinline src="static/videos/12_27.mp4"></video>
+      <p class="saw-video-caption"><span class="revplan">[Reverse Route Plan]</span> From my viewpoint at the end of the video, how can I go back to my starting point?</p>
+    </div>
+
+    <div class="saw-video-item">
+      <video autoplay muted loop playsinline src="static/videos/101_8.mp4"></video>
+      <p class="saw-video-caption"><span class="mem">[Spatial Memory]</span> Which object changes between earlier and later in the video?</p>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="saw-video-item">
+      <video autoplay muted loop playsinline src="static/videos/100_26.mp4"></video>
+      <p class="saw-video-caption"><span class="aff">[Spatial Affordance]</span> Can I touch the microwave using only arm, without leaning or position change?</p>
+    </div>
+
+    <div class="saw-video-item">
+      <video autoplay muted loop playsinline src="static/videos/100_36.mp4"></video>
+      <p class="saw-video-caption"><span class="aff">[Spatial Affordance]</span> Can I reach forward and touch the coffee cup by sitting up from the couch, without standing up or changing my position?</p>
+    </div>
+
+
+
+  </div>
+</div>
+
+<!-- ======================= End 3x6 Grid ======================= -->
+
+</div></div>
+
+
+
+
+
+
+
+        
+
+
+
+
+        <div id='saw-bench' class="rover-benchmark">
+            
+            <div id="sec:rover-overview" class="sub-section">
+                <h2 class="text"><span class="rover-text">SAW-Bench</span></h2>
+
+                    <p class="text" align="justify">
+                        <p class="text" align="justify">
+                        <strong>Benchmark Overview:</strong> SAW-Bench is a designed to evaluate <strong>observer-centric</strong> spatial reasoning from egocentric videos. Unlike prior benchmarks that emphasize scene-centric or object-object relationships, SAW-Bench focuses on situated awareness: the ability to reason about space, motion, and possible actions relative to the observer's own viewpoint as it evolves over time. The benchmark comprises <strong>786</strong> self-recorded real-world egocentric videos captured with wearable cameras across diverse indoor and outdoor environments, paired with <strong>2,071</strong> human-annotated question-answer pairs. SAW-Bench evaluates six core awareness tasks, including self-localization, relative direction, route shape, reverse route planning, spatial memory, and spatial affordance. Together, these tasks require models to maintain a coherent observer-centric spatial state, integrate egocentric motion over time, and reason beyond static visual cues. 
+
+      
+                    </p>
+                    <d-figure id="fig-task-demo" >
+                        <figure>
+                            <img data-zoomable="" draggable="false" src="static/img/task_demo_human_v6.png" alt="benchmark category">
+                            <figcaption style="text-align: left; margin-top: 20px;">
+                                <strong><i>Figure 2</i></strong>: <strong>Overview of SAW-Bench.</strong>
+                                We illustrate <i>six</i> representative tasks evaluating different aspects of situated awareness: <span class="loc">Self-Localization</span>, <span class="dir">Relative Direction</span>, <span class="shape">Route Shape</span>, <span class="revplan">Reverse Route Plan</span>, <span class="mem">Spatial Memory</span>, and <span class="aff">Spatial Affordance</span>. During data collection, human annotators follow pre-defined trajectories when recording egocentric videos; these trajectories are visualized as purple dashed arrows. For all tasks, the model input consists solely of egocentric video without access to any bird's-eye or global scene representations; the visualizations shown here are provided for illustrative purposes only.
+              
+                            </figcaption>
+                        </figure>
+                    </d-figure>
+            </div>
+            <div id="rover-construct" class="sub-section">
+                <p class="text" align="justify">
+                    <strong>Video Collection:</strong>
+                    All videos in SAW-Bench are recorded from an egocentric perspective using Ray-Ban Meta (Gen 2) smart glass worn by human participants. Most videos are captured as single, continuous clips without interruption. For tasks involving <span class="mem">Spatial Memory</span>, we apply limited post-processing by concatenating two short clips recorded in the same physical scene: one before and one after a controlled modification of the environment. No other temporal reordering or editing is performed. Audio is excluded from all videos to ensure that all reasoning is grounded solely in visual information. 
+                    Our video collection process spans a diverse set of real-world environments, including both outdoor scenes (<i>e.g.,</i> courtyards, parking lots, lawns, and plazas) and indoor scenes (<i>e.g.,</i> lecture halls, classrooms, recreation rooms, and household environments). Within each scene, we collect approximately 40-60 distinct videos to support tasks that benefit from dense coverage of a fixed environment, such as Self-Localization and Route Shape. For tasks that are more difficult to scale within a limited set of scenes, particularly <span class="mem">Spatial Memory</span> and <span class="aff">Spatial Affordance</span>, we additionally collect a set of videos across a broader range of environments outside these core scenes. This supplemental collection prioritizes diversity over dense coverage, enabling evaluation of memory and action feasibility across varied layouts and physical constraints without requiring exhaustive sampling of each scene.
+                    
+
+
+                </p>
+                <figure>
+                <img data-zoomable="" draggable="false" src="static/img/benchmark_construction_v2.png" alt="ROVER Teaser">
+                <br>
+                <figcaption>
+                    <strong><i>Figure 3</i></strong>: <strong>Benchmark Curation Pipeline.</strong>
+    We first pre-define 37 camera trajectories and annotate their metadata. Human video collectors then record egocentric videos by following these trajectories in selected scenes. Low-quality recordings are filtered and re-captured to ensure consistent video quality.
+
+                </figcaption>
+            </figure>
+
+                <p class="text" align="justify">
+                    <strong>Video Collection Protocol:</strong>
+                    During video collection, participants followed a lightweight recording protocol, consisting of high-level guidelines intended to ensure consistency across scenes while preserving natural behavior. For tasks involving <span class="loc">Self-Localization</span>, participants were instructed to record videos from a set of predefined reference locations (<i>e.g.,</i> corners, side, or center) to ensure coverage of diverse viewpoints. Beyond these coverage requirements, the protocol did not prescribe specific paths, motions, or camera poses. Instead, participants were instructed to follow coarse trajectory shapes (<i>e.g.,</i> zigzag or two consecutive turns), while retaining flexibility in how these shapes were executed within each environment. 
+
+                </p>
+
+                
+
+            </div>
+        <!-- <div id="evaluation-protocol" class="evaluation-protocol">
+            <h2 class="text">Evaluation Protocol</h2>
+            <p class="text" align="justify">
+                <strong>Multi-Dimensional Assessment</strong>:
+                We adopt a multi-dimensional protocol that combines an automated VLM judge - <strong>GPT-4.1</strong> with expert validation on stratified samples.
+            </p>
+        
+            <p class="text" align="justify">
+                <strong>Verbally-Augmented Generation Metrics</strong>:
+                We assess model performance across 5 rubric dimensions: (1) <strong>Reasoning Process (RP)</strong> evaluates the quality of verbal reasoning through logical structure and domain knowledge application; (2) <strong>Reasoning Visual (RV)</strong> measures how well generated visuals match target descriptions; (3) <strong>Reasoning Alignment (Align.)</strong> quantifies consistency between verbal reasoning and visual outcomes; (4) <strong>Visual Consistency (VC)</strong> ensures non-target elements remain unchanged; (5) <strong>Image Quality (IQ)</strong> assesses technical excellence and visual coherence.
+            </p>
+            
+            <p class="text" align="justify">
+                <strong>Visually-Augmented Generation Metrics</strong>:
+                We evaluate across 3 dimensions: (1) <strong>Interleaved Reasoning Quality (IR)</strong> evaluates plausibility and relevance of intermediate visual representations; (2) <strong>Final Answer Accuracy (Acc.)</strong> measures whether the model's final reasoning outcome matches ground truth; (3) <strong>Reasoning-Answer Alignment (Align.)</strong> quantifies how effectively generated images contribute to reaching correct conclusions.
+            </p>
+
+        </div> -->
+
+         <!-- ROVER Leaderboard Section -->
+         <div id="rover-leaderboard" class="rover-leaderboard">
+            <h2 class="text"><span class="rover-text"> SAW-Bench Leaderboard</h2>
+            
+            <div class="leaderboard-container">
+                <div class="leaderboard-header">
+                    <p class="text" align="justify">
+                        <!-- Contact information removed for privacy. -->
+                        Unless otherwise specified, all models process videos at 2 fps (frames per second).
+        <strong>Bold</strong> and <u>underlined</u> numbers indicate the best and second-best performance in each category, respectively. 
+        <span class="red">*</span>: Models do not support fps-based sampling and process a fixed total of 32 frames per video.
+        <span class="red">‡</span>: 8 frames per video sampling due to compute limitations.
+                    </p>
+                </div>
+
+                <table class="leaderboard-table saw-table">
+
+  <thead>
+    <tr class="header-group">
+      <th data-column-index="0">Model</th>
+      <th data-column-index="1">All</th>
+      <th data-column-index="2"><span class="loc">Self-Localization</span></th>
+      <th data-column-index="3"><span class="dir">Relative Direction</span></th>
+      <th data-column-index="4"><span class="shape">Route Shape</span></th>
+      <th data-column-index="5"><span class="revplan">Reverse Route Plan</span></th>
+      <th data-column-index="6"><span class="mem">Spatial Memory</span></th>
+      <th data-column-index="7"><span class="aff">Spatial Affordance</span></th>
+    </tr>
+  </thead>
+
+  <tbody id="leaderboard-body">
+
+    <!-- Baselines -->
+    <tr class="group-row baselines">
+      <td colspan="8"><strong>Baselines</strong></td>
+    </tr>
+
+    <tr>
+      <td><strong>Human Level</strong></td>
+      <td class="best-score">91.55</td>
+      <td class="best-score">94.00</td>
+      <td class="best-score">89.39</td>
+      <td class="best-score">97.62</td>
+      <td class="best-score">93.01</td>
+      <td class="best-score">88.50</td>
+      <td class="best-score">79.01</td>
+    </tr>
+    <tr>
+      <td>Chance Level (Random)</td>
+      <td>27.49</td><td>34.00</td><td>25.90</td><td>21.43</td><td>27.51</td><td>28.00</td><td>56.17</td>
+    </tr>
+    <tr>
+      <td>Chance Level (Frequent)</td>
+      <td>29.55</td><td>38.00</td><td>25.90</td><td>27.11</td><td>27.51</td><td>27.00</td><td>50.62</td>
+    </tr>
+    <tr>
+      <td>Blind LLM (GPT-5.2)</td>
+      <td>31.34</td><td>38.00</td><td>23.02</td><td>36.63</td><td>24.02</td><td>38.00</td><td>54.32</td>
+    </tr>
+    <tr>
+      <td>Socratic Model (GPT-5.2)</td>
+      <td>31.34</td><td>40.50</td><td>20.62</td><td>41.58</td><td>24.02</td><td>32.00</td><td>50.62</td>
+    </tr>
+
+    <!-- Proprietary -->
+    <tr class="group-row proprietary">
+      <td colspan="8"><strong>Proprietary Multimodal Foundation Models</strong></td>
+    </tr>
+
+    <tr>
+      <td>Gemini 3 Flash</td>
+      <td class="best-score">53.89</td>
+      <td class="second-score">48.50</td>
+      <td class="best-score">41.13</td>
+      <td class="second-score">64.84</td>
+      <td class="best-score">61.57</td>
+      <td class="best-score">66.00</td>
+      <td class="best-score">70.99</td>
+    </tr>
+    <tr>
+      <td>Gemini 2.5 Pro</td>
+      <td class="second-score">50.80</td>
+      <td>45.50</td>
+      <td>37.05</td>
+      <td class="best-score">66.12</td>
+      <td class="second-score">51.53</td>
+      <td class="best-score">66.00</td>
+      <td class="second-score">66.05</td>
+    </tr>
+    <tr>
+      <td>Gemini 3 Pro</td>
+      <td>45.97</td>
+      <td class="best-score">50.00</td>
+      <td class="second-score">38.61</td>
+      <td>52.01</td>
+      <td>36.24</td>
+      <td class="second-score">63.00</td>
+      <td>61.73</td>
+    </tr>
+    <tr>
+      <td>GPT-5.2</td>
+      <td>41.04</td><td>45.50</td><td>25.78</td><td>50.55</td><td>44.98</td><td class="second-score">63.00</td><td>62.96</td>
+    </tr>
+    <tr>
+      <td>Gemini 2.5 Flash</td>
+      <td>39.79</td><td>44.00</td><td>25.30</td><td>57.33</td><td>37.99</td><td>49.00</td><td>46.91</td>
+    </tr>
+    <tr>
+      <td>GPT-5 Mini</td>
+      <td>33.80</td><td>43.50</td><td>27.46</td><td>36.08</td><td>22.27</td><td>56.00</td><td>49.38</td>
+    </tr>
+
+    <!-- Open-source -->
+    <tr class="group-row opensource">
+      <td colspan="8"><strong>Open-Source Multimodal Foundation Models</strong></td>
+    </tr>
+
+    <tr>
+      <td>Qwen3-VL 235B-A22B</td>
+      <td class="best-score">41.40</td>
+      <td>43.50</td>
+      <td class="best-score">33.41</td>
+      <td class="best-score">53.11</td>
+      <td class="best-score">30.13</td>
+      <td>46.00</td>
+      <td>54.32</td>
+    </tr>
+    <tr>
+      <td>Qwen3-VL 32B</td>
+      <td class="second-score">38.58</td>
+      <td>44.00</td>
+      <td>29.14</td>
+      <td class="second-score">48.35</td>
+      <td class="second-score">29.26</td>
+      <td class="second-score">52.00</td>
+      <td>52.47</td>
+    </tr>
+    <tr>
+      <td>Qwen3-VL 30B-A3B</td>
+      <td>36.55</td><td>39.00</td><td class="second-score">29.62</td><td>43.04</td><td>27.07</td><td class="best-score">54.00</td><td>50.00</td>
+    </tr>
+    <tr>
+      <td>Qwen2.5-VL 32B</td>
+      <td>36.46</td><td class="best-score">53.00</td><td>28.06</td><td>41.03</td><td>24.89</td><td>45.00</td><td class="second-score">54.94</td>
+    </tr>
+    <tr>
+      <td>Qwen2.5-VL 72B</td>
+      <td>36.17</td><td class="second-score">51.50</td><td>26.74</td><td>41.76</td><td>25.33</td><td>45.00</td><td class="best-score">56.79</td>
+    </tr>
+    <tr>
+      <td>Qwen3-VL 8B</td>
+      <td>36.12</td><td>40.00</td><td>27.82</td><td>46.70</td><td>23.58</td><td>48.00</td><td>48.77</td>
+    </tr>
+    <tr>
+      <td>LLaVA OneVision 72B <span class="note red">*</span></td>
+      <td>33.70</td><td>39.00</td><td>22.30</td><td>46.15</td><td>24.45</td><td>41.00</td><td>52.47</td>
+    </tr>
+    <tr>
+      <td>InternVL3 8B <span class="note red">*</span></td>
+      <td>33.70</td><td>43.50</td><td>26.86</td><td>36.45</td><td>27.95</td><td>46.00</td><td>48.15</td>
+    </tr>
+    <tr>
+      <td>LLaVA-Video 72B <span class="note red">*</span></td>
+      <td>32.98</td><td>32.50</td><td>23.86</td><td>43.04</td><td>24.45</td><td>41.00</td><td>53.70</td>
+    </tr>
+    <tr>
+      <td>InternVL3 14B <span class="note red">*</span></td>
+      <td>32.69</td><td>49.00</td><td>17.27</td><td>45.05</td><td>24.02</td><td>54.00</td><td>49.38</td>
+    </tr>
+    <tr>
+      <td>Qwen2.5-VL 7B</td>
+      <td>31.48</td><td>38.50</td><td>19.06</td><td>43.59</td><td>26.20</td><td>38.00</td><td>49.38</td>
+    </tr>
+    <tr>
+      <td>LLaVA-NeXT-Video 32B <span class="note red">*</span></td>
+      <td>31.24</td><td>41.00</td><td>24.46</td><td>35.35</td><td>22.27</td><td>34.00</td><td>51.23</td>
+    </tr>
+    <tr>
+      <td>LLaVA-Video 7B <span class="note red">*</span></td>
+      <td>30.81</td><td>41.00</td><td>25.06</td><td>32.78</td><td>24.45</td><td>32.00</td><td>49.38</td>
+    </tr>
+    <tr>
+      <td>InternVL2 40B <span class="note red">‡</span></td>
+      <td>30.13</td><td>45.00</td><td>17.75</td><td>38.28</td><td>24.89</td><td>32.00</td><td>54.32</td>
+    </tr>
+    <tr>
+      <td>InternVL2 8B <span class="note red">*</span></td>
+      <td>29.84</td><td>43.00</td><td>14.99</td><td>41.94</td><td>24.89</td><td>40.00</td><td>50.00</td>
+    </tr>
+    <tr>
+      <td>LLaVA OneVision 7B <span class="note red">*</span></td>
+      <td>29.45</td><td>34.50</td><td>20.26</td><td>34.80</td><td>25.33</td><td>44.00</td><td>49.38</td>
+    </tr>
+    <tr>
+      <td>InternVL3 38B <span class="note red">‡</span></td>
+      <td>27.71</td><td>35.50</td><td>23.50</td><td>37.55</td><td>24.45</td><td>46.00</td><td>51.23</td>
+    </tr>
+
+  </tbody>
+</table>
+<style>
+  /* Caption */
+  .saw-table .table-caption{
+    caption-side: top;
+    text-align: left;
+    margin-bottom: 10px;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    color: #555;
+  }
+  .saw-table .note.red{ color: #c1121f; font-weight: 700; }
+
+  /* Group header rows */
+  .saw-table .group-row td{
+    font-weight: 700;
+    text-align: left;
+    padding: 10px 12px;
+  }
+  .saw-table .group-row.baselines td{ background: rgba(231,162,156,0.35); }   /* color2 */
+  .saw-table .group-row.proprietary td{ background: rgba(124,152,166,0.35); } /* color3 */
+  .saw-table .group-row.opensource td{ background: rgba(230,189,87,0.35); }   /* color7 */
+
+  /* Best / second-best styling */
+  .saw-table td.best-score{ font-weight: 800; }
+  .saw-table td.second-score{ text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Optional: tighten table */
+  .saw-table th, .saw-table td { vertical-align: middle; }
+</style>
+
+ <figure>
+                <img data-zoomable="" draggable="false" src="static/img/error_analysis.png" alt="ROVER Teaser">
+                <br>
+                <figcaption>
+                    <strong><i>Figure 4</i></strong>: <strong>Error Case Analysis.</strong>
+    <strong>(Left)</strong> <span class="revplan">Reverse Route Plan</span>: Gemini 3 Flash successfully reconstructs the return path by systematically inverting the actions from the forward pass. In contrast, Qwen3-VL 235B attempts to exploit a shortcut between the first and last frames, thereby neglecting the transitive dynamics and spatial transformations occurring throughout the frame sequence. <strong>(Right)</strong> <span class="shape">Route Shape</span>: While both Gemini 3 Flash and Qwen3-VL 235B effectively identify camera rotations, they falsely integrate these rotational pans into the observer's physical movement trajectory, leading to incorrect shape understanding.  
+                </figcaption>
+            </figure>
+        
+</div>
+    </div>
+
+        <div id='findings-and-insights' class="findings-and-insights">
+            <h2 class="text">Findings and Insights</h2>
+                <p class="text" align="justify">
+                We conducted comprehensive evaluation of 24 state-of-the-art multimodal foundation models in SAW-Bench.
+Our experiments reveal critical insights about the current state and limitations of situated awareness understanding in MFMs.
+                </p>
+
+            <figure class="float-right-figure">
+                <img data-zoomable="" draggable="false"
+                    src="static/img/egocentric_cam_traj.png"
+                    alt="Egocentric camera trajectory">
+
+                <figcaption>
+                    <strong><i>Figure 5</i></strong>:
+                    <strong>Camera Rotation and Observer's Trajectory.</strong> Visualization of three controlled scenarios used to isolate the impact of head rotation on <span class="shape">Route Shape</span>. <strong>(Left)</strong> a straight path with steady head orientation; <strong>(Middle)</strong> the same straight path with frequent left-and-right head rotations; and <strong>(Right)</strong> a true zigzag trajectory.
+                </figcaption>
+            </figure>
+
+
+                <p class="text" align="justify">
+                <strong>Camera rotation as a source of trajectory errors.</strong>
+                We identify a systematic failure mode in <span class="shape">Route Shape</span> occurring when changes in camera rotation are decoupled from the observer's translational movement. To isolate this effect, we compare three controlled scenarios: 
+                (1) a straight path with stable head ori- entation (Figure 5 <strong>Left</strong>); 
+                (2) the same straight path with frequent head rotations (Figure 5 <strong>Middle</strong>); and 
+                (3) a true zigzag trajectory (Figure 5 <strong>Right</strong>).
+                Despite identical translational motion in cases (1) and (2), even top-performing models frequently misclassify case (2) as a zigzag trajectory: Gemini 3 Flash does so in 60.0% of instances, while Qwen3-VL 235B misclassifies 53.3% of cases. As illustrated in Figure 4 Right, models justify these predictions by erroneously attributing camera orientation shifts to physical body displacement. This failure highlights a fundamental limitation in current MFMs: the inability to maintain a robust observer-centric coordinate system that distinguishes egocentric rotational pans from global positional updates.
+                </p>
+
+                <div class="keyfinding-wrap">
+              <div class="keyfinding-card">
+                <h4 class="keyfinding-title">Key Finding 1</h4>
+                <p class="keyfinding-text">
+                    Current MFMs often conflate <strong>egocentric camera rotation</strong> with <strong>translational movement</strong>.
+                </p>
+              </div>
+            </div>
+
+
+
+            
+
+                <p class="text" align="justify">
+                <strong>Trajectory complexity and error accumulation.</strong>
+                Spatial updating is an inherently accumulative process, where errors in estimating egocentric motion compound as the observer moves through an environment. In human navigation, this integration is highly sensitive to "noise" introduced by changes in orientation.
+
+
+                To investigate whether MFMs exhibit a similar sensitivity to trajectory complexity, we stratify results on the <span class="dir">Relative Direction</span> task by geometric complexity:
+                (1) <strong>Straight</strong> (pure translation), 
+                (2) <strong>Single Turn</strong> (one rotational update), and 
+                (3) <strong>Two Turns</strong> (multiple rotational updates).
+                As shown in Table 1, increasing geometric complexity is associated with a substantial accuracy degradation for most models, particularly when trajectories involve multiple orientation changes.
+                When quantified using relative performance drop with respective to straight trajectories, MFMs often exhibit significant degradation under multi-turn conditions, while human performance remains largely stable.
+                This human-model gap suggests that current MFMs struggle to reliable integrate successive egocentric orientation changes over time, resulting in compounding errors as trajectories move away from simple translational motion.
+                </p>
+
+
+
+<d-figure id="table">
+    <figure class="table-figure">
+        <img src="static/img/table.png" alt="Table 1">
+        <figcaption>
+            <strong><i>Table 1:</i> Accuracy (%) on <span class="dir">Relative Direction</span> Tasks Stratified by the Number of Turns</strong>.
+            Performance for most models degrades significantly as geometric complexity increases.
+        </figcaption>
+    </figure>
+</d-figure>
+
+        
+
+<div class="keyfinding-wrap">
+              <div class="keyfinding-card">
+                <h4 class="keyfinding-title">Key Finding 2</h4>
+                <p class="keyfinding-text">
+                    Model accuracy <strong>degrades</strong> significantly as trajectory complexity increases.
+                </p>
+              </div>
+            </div>
+
+
+<figure class="float-right-figure">
+                <img data-zoomable="" draggable="false"
+                    src="static/img/error_analysis_memory.png"
+                    alt="Egocentric camera trajectory">
+
+                <figcaption>
+                    <strong><i>Figure 6</i></strong>:
+                    <strong> Model Responses in <span class="mem">Spatial Memory</span>.</strong> Across multiple models, non-visibility is incorrectly treated as non-existence: objects that exit the camera's field of view are inferred to have disappeared or changed, revealing a gap between what is seen and what exists.
+                </figcaption>
+            </figure>
+            
+                <p class="text" align="justify">
+                <strong>Failure to maintain persistent object memory.</strong>
+                A recurring failure mode across <span class="mem">Spatial Memory</span> tasks arises from models' difficulty in maintaining object persistence across egocentric motion. Although models often provide accurate descriptions of what is visible in individual frames or short temporal windows, they fail to reason about objects that leave the camera's field of view. As shown in Figure 6, models tend to infer that objects are absent in earlier frames simply because they are not visible, incorrectly treating first observation as object appearance rather than recognizing that the object may have existed outside the field of view. These errors suggest that current MFMs rely primarily on view-dependent evidence, rather than maintaining a persistent world-state representation over time.
+
+            </p>
+
+            
+
+
+<div style="clear: both;"></div>
+
+             <div class="keyfinding-wrap">
+              <div class="keyfinding-card">
+                <h4 class="keyfinding-title">Key Finding 3</h4>
+                <p class="keyfinding-text">
+                    <strong>Persistent tacking</strong> of objects across frames remains an open challenge across models.
+                </p>
+
+              </div>
+            </div>
+            
+             <figure>
+                <img data-zoomable="" draggable="false" src="static/img/indoor_outdoor_comparison.png" alt="ROVER Teaser">
+                <br>
+                <figcaption>
+                    <strong><i>Figure 7</i></strong>: <strong>Indoor <i>v.s.</i> Ourdoor Performance.</strong>
+Comparison of zero-shot accuracy across six situated awareness tasks for Gemini 3 Flash, Gemini 2.5 Pro, GPT-5.2, and Qwen3-VL 235B.
+                </figcaption>
+            </figure>
+
+                    <p class="text" align="justify">
+                <strong>Effect of openness on situated awareness.</strong> Figure 7 summarizes model performance across indoor and outdoor environments. Contrary to the intuition that larger and more dynamic outdoor environments may increase spatial reasoning difficulty, no consistent performance degradation is observed in outdoor scenes. 
+Across the four selected models, outdoor performance is often comparable to, and in several cases higher than, indoor performance. 
+On average, the indoor-outdoor performance gap remains small.
+
+These results suggest that environment scale alone does not determine spatial reasoning difficulty. 
+While outdoor scenes typically span larger spatial extents, they often contain fewer objects and exhibit less structural clutter than indoor environments, which may reduce relational ambiguity. 
+As a result, spatial reasoning difficulty is not monotonically correlated with scene size or openness. 
+Instead, indoor environments can pose equally, if not more, complex spatial challenges due to higher object density and more intricate layout structures.
+</p>
+
+     <div class="keyfinding-wrap">
+              <div class="keyfinding-card">
+                <h4 class="keyfinding-title">Key Finding 4</h4>
+                <p class="keyfinding-text">
+                    Environment openness alone is an <strong>insufficient proxy</strong> for spatial reasoning difficulty.
+                </p>
+
+              </div>
+            </div>
+
+
+                    </div>
+
+        <div id="conclusion" style="position: relative; margin-top: 40px; margin-bottom: 0px;">
+            <h2 class="text" style="margin-top:0px; margin-bottom:10px">Conclusion</h2>
+            <p class="text" align="justify">
+                Situated awareness underlies how humans continuously perceive, navigate, and act in the physical world, yet it remains insufficiently captured by existing multimodal evaluation frameworks.
+In this work, we introduce SAW-Bench to explicitly evaluate observer-centric situated spatial understanding in MFMs using egocentric videos.
+Through a systematic evaluation of 24 models, we uncover fundamental gaps in current MFMs' ability to reason about observer-centric tasks.
+Our analysis identifies key factors underlying these limitations, offering insights for advancing MFMs toward more robust situated spatial intelligence.
+We hope this work sheds light on the development of AI systems that move beyond passive observation toward physically grounded, observer-centric, and interactive world understanding.
+            </p>
+        </div>
+
+        <div id="bibtex" style="position: relative; margin-top: 40px; width: 150%; margin-left: -25%;">
+            <h2 style="margin-top:0px; margin-bottom:10px; font-size: 1.8em; font-weight: bold;">BibTeX</h2>
+            <pre class="bibtex" style="white-space: pre-wrap; width: 100%; margin: 0; text-align: left; font-size: 14px;">
+@article{
+}
+
+</pre>
+        </div>
+
+    </div>
+
+        <!-- </d-article>
+        
+        <d-appendix>
+
+            
+        </d-appendix>  
+        <d-bibliography src="bibliography.bib"></d-bibliography>
+        <script src="/static/js/nav-bar.js"></script> -->
+
+<!-- Leaderboard Sorting JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const table = document.querySelector('.leaderboard-table');
+    if (!table) return; // Exit if table doesn't exist
+    
+    const thead = table.querySelector('thead');
+    const tbody = document.getElementById('leaderboard-body');
+    
+    // Default sort configuration: by 'ROVER-IG Average' column (index 7), descending.
+    let sortConfig = {
+        columnIndex: 7, 
+        direction: 'desc'
+    };
+
+    const headers = thead.querySelectorAll('th[data-column-index]');
+
+    // Updates the visual indicators (▲/▼) on the table headers.
+    function updateSortIndicators() {
+        headers.forEach(h => {
+            const indicator = h.querySelector('.sort-indicator');
+            if (indicator) {
+                const hIndex = parseInt(h.dataset.columnIndex);
+                if (hIndex === sortConfig.columnIndex) {
+                    indicator.textContent = sortConfig.direction === 'asc' ? '▲' : '▼';
+                    h.classList.add('active');
+                } else {
+                    indicator.textContent = '';
+                    h.classList.remove('active');
+                }
+            }
+        });
+    }
+    
+    // Parses the 'LLM Params' column, converting values like '7B' or '500M' to numbers.
+    function parseParams(param) {
+        if (param === '-') return -1;
+        const value = parseFloat(param);
+        if (isNaN(value)) return -1;
+        if (param.toLowerCase().includes('b')) return value * 1e9;
+        if (param.toLowerCase().includes('m')) return value * 1e6;
+        return value;
+    }
+
+    // Generic comparison function for sorting. Handles strings, dates, params, and numbers.
+    function compareValues(valA, valB, index) {
+        // Column 0: Model name (string comparison)
+        if (index === 0) { 
+            return valA.localeCompare(valB);
+        }
+        // Column 1: Organizor (string comparison)
+        if (index === 1) { 
+            return valA.localeCompare(valB);
+        }
+        // Column 2: LLM Params (special parsing)
+        if (index === 2) { 
+            return parseParams(valA) - parseParams(valB);
+        }
+        // Column 3: Date (date comparison)
+        if (index === 3) { 
+            return new Date(valA) - new Date(valB);
+        }
+
+        // Default: Numeric comparison for all other columns
+        const numA = parseFloat(valA);
+        const numB = parseFloat(valB);
+
+        const isNumA = !isNaN(numA);
+        const isNumB = !isNaN(numB);
+
+        if (isNumA && isNumB) return numA - numB;
+        if (isNumA) return 1; // Put non-numeric values ('-') at the bottom
+        if (isNumB) return -1;
+        return 0;
+    }
+
+    // Main function to sort the table body.
+    function sortTable() {
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        
+        // Filter out rows that should not be sorted (e.g., section headers, baselines).
+        const sortableRows = rows.filter(row => 
+            !row.classList.contains('baseline-row') &&
+            !row.classList.contains('human-level-row') &&
+            !row.classList.contains('section-divider') &&
+            !row.classList.contains('section-header')
+        );
+        
+        const direction = sortConfig.direction === 'asc' ? 1 : -1;
+
+        // Sort the filtered rows based on the selected column and direction.
+        sortableRows.sort((rowA, rowB) => {
+            const cellA = rowA.children[sortConfig.columnIndex].textContent.trim();
+            const cellB = rowB.children[sortConfig.columnIndex].textContent.trim();
+            return compareValues(cellA, cellB, sortConfig.columnIndex) * direction;
+        });
+
+        // Append the sorted rows back to the table body.
+        // This moves them to the end, after the non-sortable rows which were not removed.
+        sortableRows.forEach(row => tbody.appendChild(row));
+        updateSortIndicators();
+    }
+
+    // Add click listeners to all sortable headers.
+    headers.forEach(header => {
+        header.classList.add('sortable-header');
+        const indicator = document.createElement('span');
+        indicator.className = 'sort-indicator';
+        header.appendChild(indicator);
+
+        header.addEventListener('click', () => {
+            const columnIndex = parseInt(header.dataset.columnIndex);
+            // If clicking the same column, reverse direction.
+            if (sortConfig.columnIndex === columnIndex) {
+                sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                // Otherwise, switch to the new column and default to descending.
+                sortConfig.columnIndex = columnIndex;
+                sortConfig.direction = 'desc';
+            }
+            sortTable();
+        });
+    });
+
+    // Perform the initial sort when the page loads.
+    sortTable();
+});
+</script>
+
+    </body>
+</html>
