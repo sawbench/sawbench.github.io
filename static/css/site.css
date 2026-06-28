@@ -182,11 +182,15 @@ section.tight { padding: 44px 0; }
   text-align: center;
 }
 .hero h1.title {
-  font-size: clamp(1.9rem, 3.6vw, 2.6rem);
+  font-size: clamp(2rem, 3.8vw, 2.8rem);
   margin: 0 0 10px;
   letter-spacing: -0.03em;
-  color: var(--muted);
-  font-weight: 700;
+  font-weight: 800;
+  background: linear-gradient(95deg, var(--accent) 0%, #5b7fb8 42%, #d98b6e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--accent); /* fallback for older browsers */
 }
 .hero .subtitle {
   font-size: clamp(1.35rem, 2.7vw, 1.9rem);
