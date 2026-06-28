@@ -204,6 +204,10 @@ section.tight { padding: 44px 0; }
 .subtitle .saw {
   color: var(--accent);
   font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
 .authors {
@@ -248,9 +252,9 @@ section.tight { padding: 44px 0; }
 }
 .badge i { font-size: 0.95em; }
 .badge-spotlight {
-  color: var(--accent-dark);
-  background: var(--accent-soft);
-  border-color: #cdddf3;
+  color: #b23a2f;
+  background: #fde3de;
+  border-color: #f3b4a8;
 }
 .badge-award {
   color: #8a5a12;
