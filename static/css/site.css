@@ -185,12 +185,12 @@ section.tight { padding: 44px 0; }
   font-size: clamp(2rem, 3.8vw, 2.8rem);
   margin: 0 0 10px;
   letter-spacing: -0.03em;
-  font-weight: 800;
-  background: linear-gradient(100deg, #3b5b8c 0%, #8a6090 48%, #e2694b 100%);
+  font-weight: 900;
+  background: linear-gradient(100deg, #715c92 0%, #85638b 50%, #9c6a7b 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--accent); /* fallback for older browsers */
+  color: #85638b; /* fallback for older browsers */
 }
 .hero .subtitle {
   font-size: clamp(1.35rem, 2.7vw, 1.9rem);
